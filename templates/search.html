@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<title>
+			TweetBeat Demo
+		</title>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	</head>
+	<body>
+
+		<h2 style="margin-left: 20px;">Build Network</h2>
+		<form style="margin-left: 20px;" action="{{ url_for('index') }}" method=post>
+			{{ form.user1.label }}
+			{{ form.user1 }}
+
+			{{ form.user2.label }}
+			{{ form.user2 }}
+
+			{{ form.user3.label }}
+			{{ form.user3 }}
+
+			{{ form.submit }}
+		</form>
+		{% block content %}{% endblock %}
+	</body>
+</html>
