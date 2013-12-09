@@ -1,0 +1,42 @@
+body {
+    background-color: #eaeaea;
+}
+.navbar-header {
+    height: 50px;
+}
+.navbar-brand {
+    margin-top: -5px;
+}
+.panel-group {
+    width: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space:nowrap;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+.panel {
+    width: 300px;
+    height: 600px;
+    float: left;
+    margin-right: 10px;
+}
+.panel-body {
+    overflow: auto;
+    height: 560px;
+}
+.user {
+    border-bottom: solid 1px #e6e6e6;
+}
+.glyphicon-user {
+    float: left;
+    margin-right: 10px;
+}
+.chart div {
+  font: 13px sans-serif;
+  background-color: #B5CDE1;
+  text-align: left;
+  padding: 5px;
+  margin: 3px;
+  color: #1C3448
+}

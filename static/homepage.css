@@ -1,0 +1,42 @@
+body {
+    background-color: #eaeaea;
+}
+.container {
+    min-height: 100%;
+        height: auto !important;
+        height: 100%;  
+}
+h1 {
+    padding: 30px 30px 10px 30px;
+}
+h3 {
+    padding-bottom: 20px;
+    color: #757575;
+}
+.form-control {
+    width: 20%;
+    margin: 0 auto;
+    padding: 10px;
+}
+.form-horizontal {
+    width: 40%;
+    margin: 0 auto;
+    padding: 10px;
+}
+.input-group {
+    padding: 5px;
+}
+.row {
+    width: 30%;
+    margin: 0 auto;
+}
+.input-group-addon {
+    background-color: #428BCA;
+    color: #fff;
+    font-size: 18px;
+}
+#about {
+    color: #757575;
+    text-align: center;
+    margin-top: 20px;
+}

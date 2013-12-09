@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TweetBeat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='about.css') }}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+        <h1 class="text-center"><img src="{{ url_for('static', filename='img/TweetBeat-logo.png') }}" /></h1>
+        <p>TweetBeat allows you to stay updated with trending topics within a certain Twitter community.</p>
+        <p>Know of a few Twitter handles that tweet about similar topics? Enter those into TweetBeat and it will build a larger network of relevant handles and return trending topics from this network.</p>
+        <div id="return"><button type="button" class="btn btn-primary return">Return to TweetBeat</button></div>
+
+
+    </div> <!-- /container -->
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $('.return').on("click", function(){
+                window.location = "http://127.0.0.1:5000/";
+            });
+        });
+    </script>
+  </body>
+</html>

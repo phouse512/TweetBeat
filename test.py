@@ -5,7 +5,7 @@ import collections
 import json
 import re
 from nltk.corpus import stopwords
-import urllib2
+import urllib, urllib2
 from BeautifulSoup import BeautifulSoup
 import pprint
 
@@ -23,11 +23,9 @@ class BuildListForm(Form):
 def home():
 	return render_template('input.html')
 
-@app.route('/postTest', methods=['POST'])
-def postTest():
-	if request.method == 'POST':
-		hello = request.form['user1']
-		return render_template('postTest.html', input=hello)
+@app.route('/about')
+def about():
+	return render_template('about.html')
 
 @app.route('/search-test', methods=['POST'])
 def searchTest():
@@ -121,91 +119,23 @@ def searchTest():
 
 		linkTitles = []
 		for count in range(len(rankedLinks)):
-			source = urllib2.urlopen(rankedLinks[count][0])
-			BS = BeautifulSoup(source)
-			linkTitles.append([rankedLinks[count][0], BS.find('title').text, rankedLinks[count][1]])
+			try:
+			    f = urllib2.urlopen(rankedLinks[count][0])
+			except urllib2.HTTPError, e:
+			    f = e.fp.read()
+			else:
+				f = urllib2.urlopen(rankedLinks[count][0])
+			BS = BeautifulSoup(f)
+			try:
+				BS.find('title').text
+			except AttributeError:
+				text = 'none'
+			else:
+				text = BS.find('title').text
+			linkTitles.append([rankedLinks[count][0], text, rankedLinks[count][1]])
 
 
 		return render_template('networkResults.html', hashtags=allHashtags, topusers=finalTop, keywords=allKeywords, links=linkTitles)
-
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-	t = Twitter(auth=OAuth('931458319-2k9OMXCCIZeM7K5FuT6UfVarIUAIfJ1mYYMul99B', 'bJrLuGOzPozdYdFTw4NLq1YzUJ4zglyrNNgyxO10ljWO0', 'eEj5KPQdDK1LtxGX6fZKw', 'oKjbj9Y4LQjv2mkJ7UO24JMhLj20lhawcNZFxeh4s'))
-	testListId = t.lists.show(slug='tweetbeattestingdemo', owner_screen_name='PhilipHouse2')['id']
-
-	tweets = t.lists.statuses(list_id=testListId, count=200)
-	parsedTweets = json.dumps(tweets)
-	arrayTweets = json.loads(parsedTweets)
-	hashtags = []
-
-	for count in range(len(arrayTweets)):
-		hashtags = hashtags + re.findall(r"#(\w+)", arrayTweets[count]['text'])
-
-	hashtagCount = collections.Counter(hashtags)
-	hashtagTuples = hashtagCount.items()
-	sortedHashtagTuples = sorted(hashtagTuples, key=lambda x: x[1])
-	sortedHashtagTuples = sortedHashtagTuples[::-1]
-
-	allHashtags = []
-	mostUsed = sortedHashtagTuples[0][1]
-	for count in range(len(sortedHashtagTuples)):
-		temp = [sortedHashtagTuples[count][0], sortedHashtagTuples[count][1], sortedHashtagTuples[count][1]/float(mostUsed)*100]
-		allHashtags.append(temp)
-
-	user1_friends = t.friends.ids(screen_name='NASA')['ids']
-	user2_friends = t.friends.ids(screen_name='SPACEdotcom')['ids']
-	user3_friends = t.friends.ids(screen_name='Csa_asc')['ids']
-
-	masterList = user1_friends + user2_friends + user3_friends
-	x = collections.Counter(masterList)
-	y = x.most_common(5)
-
-	top = t.users.lookup(user_id=','.join(str(x) for x,z in y), _timeout=1)
-	names = []
-	for count in range(5):
-		names.append(top[count]['name'])
-
-	finalTop = []
-	for count in range(5):
-		temp = [names[count], y[count][1]/float(3)*100, top[count]['profile_image_url_https']]
-		finalTop.append(temp) 
-	
-	#keywords
-	allWords = ''
-	for count in range(len(arrayTweets)):
-		allWords = allWords + " " + arrayTweets[count]['text']
-
-	splitWords = allWords.split()
-	manualStopList = ['RT', '21', '-', '&amp;', 'I', 'MT', 'The', 'It\'s']
-	filteredWords = [w for w in splitWords if not w in stopwords.words('english')]
-	filteredWords2 = [w for w in filteredWords if not w in manualStopList]
-	noHashtags = [s.strip('#') for s in filteredWords2]
-	ranked = collections.Counter(noHashtags).most_common(100)
-
-	maxUse = ranked[0][1]
-	allKeywords = []
-	for count in range(len(ranked)):
-		temp = [ranked[count][0], ranked[count][1], ranked[count][1]/float(maxUse)*100]
-		allKeywords.append(temp)
-
-	#links 
-	allLinks = []
-	for count in range(len(arrayTweets)):
-		try:
-  			arrayTweets[count]['entities']['urls'][0]['expanded_url']
-		except IndexError:
-			pass
-		else:
-			allLinks.append(arrayTweets[count]['entities']['urls'][0]['expanded_url'])
-
-
-	#links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', allLinks)
-	#rankedLinks = collections.Counter(links).most_common()
-	rankedLinks = collections.Counter(allLinks).most_common()
-
-
-	return render_template('networkResults.html', hashtags=allHashtags, topusers=finalTop, keywords=allKeywords, links=rankedLinks)
-
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -265,73 +195,94 @@ def index():
 	elif request.method == 'GET':
 		return render_template('search.html', form=form)
 
-@app.route('/search2', methods=['GET', 'POST'])
-def search2():
-	t = Twitter(auth=OAuth('931458319-2k9OMXCCIZeM7K5FuT6UfVarIUAIfJ1mYYMul99B', 'bJrLuGOzPozdYdFTw4NLq1YzUJ4zglyrNNgyxO10ljWO0', 'eEj5KPQdDK1LtxGX6fZKw', 'oKjbj9Y4LQjv2mkJ7UO24JMhLj20lhawcNZFxeh4s'))
-	testListId = t.lists.show(slug='tweetbeatbrooklyn', owner_screen_name='PhilipHouse2')['id']
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    t = Twitter(auth=OAuth('931458319-2k9OMXCCIZeM7K5FuT6UfVarIUAIfJ1mYYMul99B', 'bJrLuGOzPozdYdFTw4NLq1YzUJ4zglyrNNgyxO10ljWO0', 'eEj5KPQdDK1LtxGX6fZKw', 'oKjbj9Y4LQjv2mkJ7UO24JMhLj20lhawcNZFxeh4s'))
+    testListId = t.lists.show(slug='tweetbeattestingdemo', owner_screen_name='PhilipHouse2')['id']
 
-	tweets = t.lists.statuses(list_id=testListId, count=200)
-	parsedTweets = json.dumps(tweets)
-	arrayTweets = json.loads(parsedTweets)
-	hashtags = []
+    tweets = t.lists.statuses(list_id=testListId, count=200)
+    parsedTweets = json.dumps(tweets)
+    arrayTweets = json.loads(parsedTweets)
+    hashtags = []
 
-	for count in range(len(arrayTweets)):
-		hashtags = hashtags + re.findall(r"#(\w+)", arrayTweets[count]['text'])
+    for count in range(len(arrayTweets)):
+        hashtags = hashtags + re.findall(r"#(\w+)", arrayTweets[count]['text'])
 
-	hashtagCount = collections.Counter(hashtags)
-	hashtagTuples = hashtagCount.items()
-	sortedHashtagTuples = sorted(hashtagTuples, key=lambda x: x[1])
-	sortedHashtagTuples = sortedHashtagTuples[::-1]
+    hashtagCount = collections.Counter(hashtags)
+    hashtagTuples = hashtagCount.items()
+    sortedHashtagTuples = sorted(hashtagTuples, key=lambda x: x[1])
+    sortedHashtagTuples = sortedHashtagTuples[::-1]
 
-	allHashtags = []
-	mostUsed = sortedHashtagTuples[0][1]
-	for count in range(len(sortedHashtagTuples)):
-		temp = [sortedHashtagTuples[count][0], sortedHashtagTuples[count][1], sortedHashtagTuples[count][1]/float(mostUsed)*100]
-		allHashtags.append(temp)
+    allHashtags = []
+    mostUsed = sortedHashtagTuples[0][1]
+    for count in range(len(sortedHashtagTuples)):
+        temp = [sortedHashtagTuples[count][0], sortedHashtagTuples[count][1], sortedHashtagTuples[count][1]/float(mostUsed)*100]
+        allHashtags.append(temp)
 
-	user1_friends = t.friends.ids(screen_name='Brokelyn')['ids']
-	user2_friends = t.friends.ids(screen_name='thebklynkitchen')['ids']
-	user3_friends = t.friends.ids(screen_name='BrooklynBrewery')['ids']
+    user1_friends = t.friends.ids(screen_name='NASA')['ids']
+    user2_friends = t.friends.ids(screen_name='SPACEdotcom')['ids']
+    user3_friends = t.friends.ids(screen_name='Csa_asc')['ids']
+    user4_friends = t.friends.ids(screen_name='Cmdr_Hadfield')['ids']
+    user5_friends = t.friends.ids(screen_name='AstroKarenN')['ids']
 
-	masterList = user1_friends + user2_friends + user3_friends
-	x = collections.Counter(masterList)
-	y = x.most_common(5)
+    masterList = user1_friends + user2_friends + user3_friends + user4_friends + user5_friends
+    x = collections.Counter(masterList)
+    y = x.most_common(5)
 
-	top = t.users.lookup(user_id=','.join(str(x) for x,z in y), _timeout=1)
-	names = []
-	for count in range(5):
-		names.append(top[count]['name'])
+    top = t.users.lookup(user_id=','.join(str(x) for x,z in y), _timeout=1)
+    names = []
+    for count in range(5):
+        names.append(top[count]['name'])
 
 	finalTop = []
-	for count in range(5):
-		temp = [names[count], y[count][1]/float(3)*100, top[count]['profile_image_url_https']]
+	for idx, val in enumerate(names):
+		temp = [val, y[idx][1]/float(5)*100, top[idx]['profile_image_url_https'], 'http://twitter.com/' + top[idx]['screen_name']]
 		finalTop.append(temp) 
-	
-	#keywords
-	allWords = ''
-	for count in range(len(arrayTweets)):
-		allWords = allWords + " " + arrayTweets[count]['text']
+    
+    #keywords
+    allWords = ''
+    for count in range(len(arrayTweets)):
+        allWords = allWords + " " + arrayTweets[count]['text']
 
-	splitWords = allWords.split()
-	filteredWords = [w for w in splitWords if not w in stopwords.words('english')]
-	noHashtags = [s.strip('#') for s in filteredWords]
-	ranked = collections.Counter(noHashtags).most_common(100)
+    splitWords = allWords.split()
+    manualStopList = ['RT', '21', '-', '&amp;', 'I', 'MT', 'The', 'It\'s']
+    filteredWords = [w for w in splitWords if not w in stopwords.words('english')]
+    filteredWords2 = [w for w in filteredWords if not w in manualStopList]
+    noHashtags = [s.strip('#') for s in filteredWords2]
+    ranked = collections.Counter(noHashtags).most_common(100)
 
-	maxUse = ranked[0][1]
-	allKeywords = []
-	for count in range(len(ranked)):
-		temp = [ranked[count][0], ranked[count][1], ranked[count][1]/float(maxUse)*100]
-		allKeywords.append(temp)
+    maxUse = ranked[0][1]
+    allKeywords = []
+    for count in range(len(ranked)):
+        temp = [ranked[count][0], ranked[count][1], ranked[count][1]/float(maxUse)*100]
+        allKeywords.append(temp)
 
-	#links 
-	allLinks = ''
-	for count in range(len(arrayTweets)):
-		allLinks = allLinks + " " + arrayTweets[count]['text']
+    #links 
+    allLinks = []
+    for count in range(len(arrayTweets)):
+        try:
+			arrayTweets[count]['entities']['urls'][0]['expanded_url']
+        except IndexError:
+            pass
+        else:
+	        allLinks.append(arrayTweets[count]['entities']['urls'][0]['expanded_url'])
 
-	links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', allLinks)
-	rankedLinks = collections.Counter(links).most_common()
+    #links = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', allLinks)
+    #rankedLinks = collections.Counter(links).most_common()
+    rankedLinks = collections.Counter(allLinks).most_common(20)
 
-	return render_template('networkResults.html', hashtags=allHashtags, topusers=finalTop, keywords=allKeywords, links=rankedLinks)
+
+    linkTitles = []
+    for count in range(len(rankedLinks)):
+		url = urllib.quote(rankedLinks[count][0])
+		source = urllib2.urlopen(rankedLinks[count][0])
+		BS = BeautifulSoup(source)
+		linkTitles.append([rankedLinks[count][0], BS.find('title').text, rankedLinks[count][1]])
+
+    return render_template('networkResults.html', hashtags=allHashtags, topusers=finalTop, keywords=allKeywords, links=linkTitles)
+
+
+
 
 
 

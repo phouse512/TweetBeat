@@ -4,8 +4,8 @@
     <title>TweetBeat</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <link href="https://c9.io/denisedslu/tweetbeat/workspace/css/results.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link href="{{ url_for('static', filename='results.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -25,7 +25,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand"><img src="https://c9.io/denisedslu/tweetbeat/workspace/TweetBeat-logo-condensed.png"/></a>
+    <a class="navbar-brand"><img src="{{ url_for('static', filename='img/TweetBeat-logo-condensed.png') }}"/></a>
   </div>
 
   <!-- Collect the nav links, forms, and other content for toggling -->
@@ -44,7 +44,9 @@
   </div><!-- /.navbar-collapse -->
 </nav>
 
-<div class="panel-group">
+<div style="margin-top: 55px;" class="alert alert-success"><strong>Tweetbeat</strong> has built a list of <strong>50 users</strong> and gathered the tweets from all <strong>50</strong> users in the past few days</div>
+
+<div style="margin-top: 10px;" class="panel-group">
         <div class="panel panel-primary">
             <div class="panel-heading">
               <h3 class="panel-title">Keywords</h3>
