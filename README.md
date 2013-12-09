@@ -50,14 +50,14 @@ Here are the following libraries that TweetBeat uses that you will have to impor
 
 You can use the following 5 commands from the virtualenv to install these libraries:
 ```
-  pip install Flask
-  pip install wtforms
-  pip install twitter
-  pip install nltk
-  pip install BeautifulSoup
+  $ pip install Flask
+  $ pip install wtforms
+  $ pip install twitter
+  $ pip install nltk
+  $ pip install BeautifulSoup
 ```
 
-If all installed successfully, the installation of TweetBeat is now complete! All that is needed is for you to start the server (running via Flask). If you notice, there is a file called test.py in the main directory. All that you need to do to start the server is to call the following line from the commmand line.
+If all installed successfully, the installation of TweetBeat is now complete! All that is needed is for you to start the server (running via Flask). If you notice, there is a file called test.py in the main directory. All that you need to do to start the server is to call the following line from the commmand line (you should still be in virtualenv at this point).
 
 ```
   python test.py
