@@ -42,11 +42,11 @@ $ . venv/bin/activate
 If run successfully, you will notice that the shell prompt of your command line has slightly changed from the default. On Mac OsX, the prefix (venv) is added before the normal shell prompt. Once you've done this, congratulations! You're successfully working out of a virtual installation of Python that is independent from your system installation.
 
 Here are the following libraries that TweetBeat uses that you will have to import using the 'pip install' command:
-Flask (http://flask.pocoo.org/)
-wtforms (http://wtforms.readthedocs.org/en/latest/)
-Twitter (https://github.com/sixohsix/twitter)
-NLTK (http://nltk.org/)
-BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/)
+* Flask (http://flask.pocoo.org/)
+* wtforms (http://wtforms.readthedocs.org/en/latest/)
+* Twitter (https://github.com/sixohsix/twitter)
+* NLTK (http://nltk.org/)
+* BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/)
 
 You can use the following 5 commands from the virtualenv to install these libraries:
 ```
