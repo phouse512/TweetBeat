@@ -43,13 +43,15 @@ If run successfully, you will notice that the shell prompt of your command line 
 
 Here are the following libraries that TweetBeat uses that you will have to import using the 'pip install' command:
 Flask (http://flask.pocoo.org/)
+wtforms (http://wtforms.readthedocs.org/en/latest/)
 Twitter (https://github.com/sixohsix/twitter)
 NLTK (http://nltk.org/)
 BeautifulSoup (http://www.crummy.com/software/BeautifulSoup/)
 
-You can use the following 4 commands from the virtualenv to install these libraries:
+You can use the following 5 commands from the virtualenv to install these libraries:
 ```
   pip install Flask
+  pip install wtforms
   pip install twitter
   pip install nltk
   pip install BeautifulSoup
