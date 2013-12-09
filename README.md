@@ -60,7 +60,7 @@ You can use the following 5 commands from the virtualenv to install these librar
 If all installed successfully, the installation of TweetBeat is now complete! All that is needed is for you to start the server (running via Flask). If you notice, there is a file called test.py in the main directory. All that you need to do to start the server is to call the following line from the commmand line (you should still be in virtualenv at this point).
 
 ```
-  python test.py
+  $ python test.py
 ```
 
 The server should begin, and you will have a locally hosted url that you can navigate to! If you have any questions, feel free to contact me via github or email (philiphouse2015 at u.northwestern.edu).
